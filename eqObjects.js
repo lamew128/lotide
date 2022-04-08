@@ -27,6 +27,10 @@ const eqObjects = function(object1, object2) {
           if (!eqArrays(object1[key], object2[key])) {
             return false;
           }
+        } else if (typeof object1[key] === 'object' && !(object1[key] instanceof Array) && typeof object2[key] === 'object' && !(object2[key] instanceof Array)) {
+            if (!eqObjects(object1[key], object2[key])) {
+              return false;
+            }
         } else if (object1[key] !== object2[key]) {
           return false;
         }
@@ -37,16 +41,8 @@ const eqObjects = function(object1, object2) {
 };
 
 
-const ab = { a: "1", b: "2" };
-const ba = { b: "2", a: "1" };
-console.log(eqObjects(ab, ba)); // => true
+console.log(eqObjects({ a: { z: 1 }, b: 2 }, { a: { z: 1 }, b: 2 })) // => true
 
-const abc = { a: "1", b: "2", c: "3" };
-console.log(eqObjects(ab, abc)); // => false
-
-const cd = { c: "1", d: ["2", 3] };
-const dc = { d: ["2", 3], c: "1" };
-assertEqual(eqObjects(cd, dc), true); // => true
-
-const cd2 = { c: "1", d: ["2", 3, 4] };
-assertEqual(eqObjects(cd, cd2), false); // => false
+console.log(eqObjects({ a: { y: 0, z: 1 }, b: 2 }, { a: { z: 1 }, b: 2 })) // => false
+console.log(eqObjects({ a: { y: 0, z: 1 }, b: 2 }, { a: 1, b: 2 })) // => false
+console.log(eqObjects({ a: { y: 0, z: {q: 6, w:{}}}, b: 2 }, { a: { y: 0, z: {q: 6, w:{}}}, b: 2 })) // => true
